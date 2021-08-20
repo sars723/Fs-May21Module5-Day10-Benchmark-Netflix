@@ -12,7 +12,7 @@ mediaRouter.get("/", async (req, res, next) => {
    
     try {
 
-      
+
       /* const medias = await getMedias() */
         const response = await fetch(
             `http://www.omdbapi.com/?apikey=3d9e8fbe&s=${req.query.s}&t=${req.query.t} `
@@ -20,31 +20,14 @@ mediaRouter.get("/", async (req, res, next) => {
 console.log("query",req.query.s)
           if (response.ok) { 
             const fetchedMovies = await response.json();
-            /* console.log(fetchedMovies.Search)
-            medias.push(fetchedMovies.Search)
-            await writeMedias(medias) */
             await writeMedias(fetchedMovies.Search)
-           /*  const medias =fetchedMovies.Search */
+         
             res.send(fetchedMovies.Search)
-           
          
           } else {
          
            console.log("something wrong")
           }
-
-
-     /*  console.log("Query params --> ", req.query)
-      const medias = await getMedias()
-     
-  
-      if (req.query && req.query.title) {
-        const filteredMedias = Medias.filter(media => media.title === req.query.title)
-        res.send(filteredMedias)
-      } else {
-          const 
-        res.send(medias)
-      } */
     } catch (error) {
       next(error)
     }
@@ -115,8 +98,8 @@ console.log(medias)
   
 mediaRouter.put("/:id/reviews", async (req, res, next) => {
   try {
-  /*   const { text, userName } = req.body;
-    const review = { id: uniqid(), text, userName, createdAt: new Date() }; */
+    const { text, userName } = req.body;
+    const review = { id: uniqid(), text, userName, createdAt: new Date() };
    
     const medias = await getMedias()
     const mediaIndex = medias.findIndex(
