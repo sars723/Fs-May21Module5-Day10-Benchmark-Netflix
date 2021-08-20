@@ -11,24 +11,31 @@ const mediaRouter = express.Router()
 mediaRouter.get("/", async (req, res, next) => {
    
     try {
-
-
-      /* const medias = await getMedias() */
+     const medias = await getMedias() 
+     let movieExisted=-1
         const response = await fetch(
             `http://www.omdbapi.com/?apikey=3d9e8fbe&s=${req.query.s}&t=${req.query.t} `
           );
 console.log("query",req.query.s)
           if (response.ok) { 
             const fetchedMovies = await response.json();
-            await writeMedias(fetchedMovies.Search)
+            fetchedMovies.Search.map(movie=>{
+              movieExisted=medias.findIndex(media=>media.imdbID===movie.imdbID)
+               if(movieExisted){
+                medias.push(movie)
+               }
+            })
+           
+            await writeMedias(medias)
          
-            res.send(fetchedMovies.Search)
+            res.send(medias)
          
           } else {
          
            console.log("something wrong")
           }
     } catch (error) {
+      console.log(error)
       next(error)
     }
   })
@@ -105,7 +112,7 @@ mediaRouter.put("/:id/reviews", async (req, res, next) => {
     const mediaIndex = medias.findIndex(
       (media) => media.imdbID === req.params.id
     );
-    if (!mediaIndex == -1) {
+    if (!mediaIndex === -1) {
       res
         .status(404)
         .send({ message: `media with ${req.params.id} is not found!` });
