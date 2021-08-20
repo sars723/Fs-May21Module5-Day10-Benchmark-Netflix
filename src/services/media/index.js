@@ -12,11 +12,12 @@ mediaRouter.get("/", async (req, res, next) => {
    
     try {
 
+      
       /* const medias = await getMedias() */
         const response = await fetch(
-            `http://www.omdbapi.com/?apikey=3d9e8fbe&s=batman&t=batman `
+            `http://www.omdbapi.com/?apikey=3d9e8fbe&s=${req.query.s}&t=${req.query.t} `
           );
-
+console.log("query",req.query.s)
           if (response.ok) { 
             const fetchedMovies = await response.json();
             /* console.log(fetchedMovies.Search)
@@ -110,6 +111,40 @@ console.log(medias)
       next(error)
     }
   })
+
+  
+mediaRouter.put("/:id/reviews", async (req, res, next) => {
+  try {
+  /*   const { text, userName } = req.body;
+    const review = { id: uniqid(), text, userName, createdAt: new Date() }; */
+   
+    const medias = await getMedias()
+    const mediaIndex = medias.findIndex(
+      (media) => media.imdbID === req.params.id
+    );
+    if (!mediaIndex == -1) {
+      res
+        .status(404)
+        .send({ message: `media with ${req.params.id} is not found!` });
+    }
+    const previousMedia = medias[mediaIndex];
+    previousMedia.reviews = previousMedia.reviews || [];
+    const changedReview = {
+      ...previousMedia,
+      ...req.body,
+      reviews: [...previousMedia.reviews, review],
+      updatedAt: new Date(),
+      imdbID: req.params.id,
+    };
+    medias[mediaIndex] = changedReview;
+    await writeMedias(medias)
+  
+    res.send(changedReview);
+  } catch (error) {
+    console.log(error);
+    res.send(500).send({ message: error.message });
+  }
+});
   
   export default mediaRouter
   

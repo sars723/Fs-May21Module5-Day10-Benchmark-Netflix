@@ -28,7 +28,7 @@ filesRouter.post("/:id/poster", multer({ storage: cloudinaryStorage }).single("m
       console.log(url)
       const media = medias.find(media=>media.imdbID===req.params.id);
       console.log(media)
-      media.poster=url
+      media.Poster=url
       medias = medias.filter(media=>media.imdbID!==req.params.id)
       medias.push(media)
       await writeMedias(medias)
