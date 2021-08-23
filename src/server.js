@@ -17,7 +17,7 @@ const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL]
 const corsOpts = {
   origin: function (origin, next) {
     console.log("ORIGIN --> ", origin)
-    if ( whitelist.indexOf(origin) !== -1) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
       next(null, true)
     } else {
       next(new Error(`Origin ${origin} not allowed!`))
